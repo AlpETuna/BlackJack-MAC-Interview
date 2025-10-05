@@ -12,14 +12,14 @@ A modern, responsive blackjack game built with Next.js, Supabase, and TailwindCS
 - ✅ Chip management and purchasing
 - ✅ Game history and statistics
 - ✅ AI assistant for game decisions
-- ✅ Ready for Vercel deployment
+- ✅ Ready for Netlify deployment
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14, TypeScript, TailwindCSS
 - **UI Components**: ShadCN/UI, Radix UI
 - **Database**: Supabase
-- **Deployment**: Vercel (recommended)
+- **Deployment**: Netlify (recommended)
 - **Styling**: TailwindCSS with custom animations
 
 ## Setup Instructions
@@ -89,11 +89,11 @@ Visit [http://localhost:3000](http://localhost:3000)
 
 ## Deployment
 
-### Vercel (Recommended)
+### Netlify (Recommended)
 
 1. Push code to GitHub
-2. Connect repository to Vercel
-3. Add environment variables in Vercel dashboard
+2. Connect repository to Netlify
+3. Add environment variables in Netlify dashboard
 4. Deploy
 
 ### Manual Deployment
