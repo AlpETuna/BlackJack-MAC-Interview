@@ -46,19 +46,21 @@ export function triggerConfetti() {
     while (measure) {
       const dart = measure * random();
       let i, l, interval, a, b, c, d;
+      let dartPosition = 0;
 
       for (i = 0, l = domain.length, measure = 0; i < l; i += 2) {
         a = domain[i];
         b = domain[i + 1];
         interval = b - a;
         if (dart < measure + interval) {
-          spline.push(dart + a - measure);
+          dartPosition = dart + a - measure;
+          spline.push(dartPosition);
           break;
         }
         measure += interval;
       }
-      c = (dart + a - measure) - radius;
-      d = (dart + a - measure) + radius;
+      c = dartPosition - radius;
+      d = dartPosition + radius;
 
       for (i = domain.length - 1; i > 0; i -= 2) {
         l = i - 1;
@@ -90,65 +92,79 @@ export function triggerConfetti() {
   container.style.overflow = 'visible';
   container.style.zIndex = '9999';
 
-  function Confetto(theme: any) {
-    (this as any).frame = 0;
-    (this as any).outer = document.createElement('div');
-    (this as any).inner = document.createElement('div');
-    (this as any).outer.appendChild((this as any).inner);
+  class Confetto {
+    frame: number = 0;
+    outer: HTMLDivElement;
+    inner: HTMLDivElement;
+    axis: string;
+    theta: number;
+    dTheta: number;
+    x: number;
+    y: number;
+    dx: number;
+    dy: number;
+    splineX: number[];
+    splineY: number[];
 
-    const outerStyle = (this as any).outer.style;
-    const innerStyle = (this as any).inner.style;
-    outerStyle.position = 'absolute';
-    outerStyle.width = (sizeMin + sizeMax * random()) + 'px';
-    outerStyle.height = (sizeMin + sizeMax * random()) + 'px';
-    innerStyle.width = '100%';
-    innerStyle.height = '100%';
-    innerStyle.backgroundColor = theme();
+    constructor(theme: any) {
+      this.outer = document.createElement('div');
+      this.inner = document.createElement('div');
+      this.outer.appendChild(this.inner);
 
-    outerStyle.perspective = '50px';
-    outerStyle.transform = 'rotate(' + (360 * random()) + 'deg)';
-    (this as any).axis = 'rotate3D(' +
-      cos(360 * random()) + ',' +
-      cos(360 * random()) + ',0,';
-    (this as any).theta = 360 * random();
-    (this as any).dTheta = dThetaMin + dThetaMax * random();
-    innerStyle.transform = (this as any).axis + (this as any).theta + 'deg)';
+      const outerStyle = this.outer.style;
+      const innerStyle = this.inner.style;
+      outerStyle.position = 'absolute';
+      outerStyle.width = (sizeMin + sizeMax * random()) + 'px';
+      outerStyle.height = (sizeMin + sizeMax * random()) + 'px';
+      innerStyle.width = '100%';
+      innerStyle.height = '100%';
+      innerStyle.backgroundColor = theme();
 
-    (this as any).x = window.innerWidth * random();
-    (this as any).y = -deviation;
-    (this as any).dx = sin(dxThetaMin + dxThetaMax * random());
-    (this as any).dy = dyMin + dyMax * random();
-    outerStyle.left = (this as any).x + 'px';
-    outerStyle.top = (this as any).y + 'px';
+      outerStyle.perspective = '50px';
+      outerStyle.transform = 'rotate(' + (360 * random()) + 'deg)';
+      this.axis = 'rotate3D(' +
+        cos(360 * random()) + ',' +
+        cos(360 * random()) + ',0,';
+      this.theta = 360 * random();
+      this.dTheta = dThetaMin + dThetaMax * random();
+      innerStyle.transform = this.axis + this.theta + 'deg)';
 
-    (this as any).splineX = createPoisson();
-    (this as any).splineY = [];
-    for (let i = 1, l = (this as any).splineX.length - 1; i < l; ++i) {
-      (this as any).splineY[i] = deviation * random();
+      this.x = window.innerWidth * random();
+      this.y = -deviation;
+      this.dx = sin(dxThetaMin + dxThetaMax * random());
+      this.dy = dyMin + dyMax * random();
+      outerStyle.left = this.x + 'px';
+      outerStyle.top = this.y + 'px';
+
+      this.splineX = createPoisson();
+      this.splineY = [];
+      for (let i = 1, l = this.splineX.length - 1; i < l; ++i) {
+        this.splineY[i] = deviation * random();
+      }
+      this.splineY[0] = this.splineY[this.splineX.length - 1] = deviation * random();
     }
-    (this as any).splineY[0] = (this as any).splineY[(this as any).splineX.length - 1] = deviation * random();
 
-    (this as any).update = function(height: number, delta: number) {
-      (this as any).frame += delta;
-      (this as any).x += (this as any).dx * delta;
-      (this as any).y += (this as any).dy * delta;
-      (this as any).theta += (this as any).dTheta * delta;
+    update(height: number, delta: number): boolean {
+      this.frame += delta;
+      this.x += this.dx * delta;
+      this.y += this.dy * delta;
+      this.theta += this.dTheta * delta;
 
-      const phi = ((this as any).frame % 7777) / 7777;
+      const phi = (this.frame % 7777) / 7777;
       let i = 0, j = 1;
-      while (phi >= (this as any).splineX[j]) i = j++;
+      while (phi >= this.splineX[j]) i = j++;
       const rho = interpolation(
-        (this as any).splineY[i],
-        (this as any).splineY[j],
-        (phi - (this as any).splineX[i]) / ((this as any).splineX[j] - (this as any).splineX[i])
+        this.splineY[i],
+        this.splineY[j],
+        (phi - this.splineX[i]) / (this.splineX[j] - this.splineX[i])
       );
       const phiRad = phi * PI2;
 
-      outerStyle.left = (this as any).x + rho * cos(phiRad) + 'px';
-      outerStyle.top = (this as any).y + rho * sin(phiRad) + 'px';
-      innerStyle.transform = (this as any).axis + (this as any).theta + 'deg)';
-      return (this as any).y > height + deviation;
-    };
+      this.outer.style.left = this.x + rho * cos(phiRad) + 'px';
+      this.outer.style.top = this.y + rho * sin(phiRad) + 'px';
+      this.inner.style.transform = this.axis + this.theta + 'deg)';
+      return this.y > height + deviation;
+    }
   }
 
   if (!frame) {
@@ -156,7 +172,7 @@ export function triggerConfetti() {
 
     const theme = colorThemes[0];
     (function addConfetto() {
-      const confetto = new (Confetto as any)(theme);
+      const confetto = new Confetto(theme);
       confetti.push(confetto);
       container.appendChild(confetto.outer);
       timer = setTimeout(addConfetto, spread * random());
