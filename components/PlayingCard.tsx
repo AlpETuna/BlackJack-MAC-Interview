@@ -9,7 +9,6 @@ interface PlayingCardProps {
   className?: string
   isWinning?: boolean
   isLosing?: boolean
-  dealDelay?: number
 }
 
 export function PlayingCard({ 
@@ -17,8 +16,7 @@ export function PlayingCard({
   hidden = false, 
   className, 
   isWinning = false, 
-  isLosing = false,
-  dealDelay = 0
+  isLosing = false
 }: PlayingCardProps) {
   if (hidden) {
     return (
@@ -28,7 +26,6 @@ export function PlayingCard({
           "bg-gradient-to-br from-blue-800 to-blue-900 animate-card-deal",
           className
         )}
-        style={{ animationDelay: `${dealDelay}ms` }}
       >
         <div className="text-white text-sm font-bold">🂠</div>
       </div>
@@ -40,9 +37,9 @@ export function PlayingCard({
       className={cn(
         "w-20 h-28 bg-white border-2 border-gray-300 rounded-lg flex flex-col justify-between p-2",
         "transition-all duration-300 animate-card-deal",
+        isWinning && "animate-win-glow",
         className
       )}
-      style={{ animationDelay: `${dealDelay}ms` }}
     >
       <div className={cn("text-sm font-bold", getCardColor(card.suit))}>
         <div>{card.rank}</div>

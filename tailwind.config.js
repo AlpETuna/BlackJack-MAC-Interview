@@ -66,9 +66,9 @@ module.exports = {
           to: { height: 0 },
         },
         "card-deal": {
-          "0%": { transform: "translateX(-200px) translateY(-50px) rotate(-15deg) scale(0.8)", opacity: "0" },
-          "60%": { opacity: "1" },
-          "100%": { transform: "translateX(0) translateY(0) rotate(0deg) scale(1)", opacity: "1" },
+          "0%": { transform: "rotateY(180deg) scale(0.8)", opacity: "0" },
+          "50%": { transform: "rotateY(90deg) scale(0.9)", opacity: "0.5" },
+          "100%": { transform: "rotateY(0deg) scale(1)", opacity: "1" },
         },
         "card-flip": {
           "0%": { transform: "rotateY(0deg)" },
@@ -87,6 +87,14 @@ module.exports = {
           "0%, 100%": { boxShadow: "0 0 5px rgba(34, 197, 94, 0.5)" },
           "50%": { boxShadow: "0 0 20px rgba(34, 197, 94, 0.8)" },
         },
+        "win-celebration": {
+          "0%": { transform: "scale(1) rotate(0deg)", opacity: "1" },
+          "25%": { transform: "scale(1.1) rotate(5deg)", opacity: "1" },
+          "50%": { transform: "scale(1.2) rotate(-5deg)", opacity: "1" },
+          "75%": { transform: "scale(1.1) rotate(3deg)", opacity: "1" },
+          "100%": { transform: "scale(1) rotate(0deg)", opacity: "1" },
+        },
+
         "lose-fade": {
           "0%": { opacity: "1" },
           "100%": { opacity: "0.5" },
@@ -99,11 +107,13 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "card-deal": "card-deal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        "card-deal": "card-deal 0.6s ease-out",
         "card-flip": "card-flip 0.4s ease-in-out",
         "card-reveal": "card-reveal 0.4s ease-in-out",
         "chip-move": "chip-move 0.3s ease-in-out",
         "win-glow": "win-glow 1s ease-in-out infinite",
+        "win-celebration": "win-celebration 0.8s ease-in-out",
+
         "lose-fade": "lose-fade 0.5s ease-out",
         "pulse-button": "pulse-button 0.3s ease-in-out",
       },

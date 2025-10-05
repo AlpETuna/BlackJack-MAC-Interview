@@ -6,6 +6,7 @@ import { PlayingCard } from '@/components/PlayingCard'
 import { AuthModal } from '@/components/AuthModal'
 import { useSession } from '@/hooks/useSession'
 import { useAuth } from '@/hooks/useAuth'
+import { triggerConfetti } from '@/lib/confetti'
 import Link from 'next/link'
 import { 
   GameState, 
@@ -154,6 +155,11 @@ export function GameBoard() {
       result,
       chips: newChips
     }))
+
+    // Trigger confetti on win
+    if (result === 'win') {
+      setTimeout(() => triggerConfetti(), 500)
+    }
   }
 
   const newGame = () => {
@@ -253,7 +259,7 @@ export function GameBoard() {
                     key={index} 
                     card={card} 
                     hidden={index === 1 && gameState.gameStatus === 'playing'}
-                    dealDelay={index * 300}
+                    isWinning={gameState.result === 'lose' && gameState.gameStatus === 'finished'}
                   />
                 )
               }
@@ -262,7 +268,11 @@ export function GameBoard() {
               )
             })}
             {gameState.dealerHand.slice(2).map((card, index) => (
-              <PlayingCard key={index + 2} card={card} dealDelay={(index + 2) * 300} />
+              <PlayingCard 
+                key={index + 2} 
+                card={card} 
+                isWinning={gameState.result === 'lose' && gameState.gameStatus === 'finished'}
+              />
             ))}
           </div>
           <div className="text-center text-white text-lg">Dealer</div>
@@ -279,7 +289,7 @@ export function GameBoard() {
                   <PlayingCard 
                     key={index} 
                     card={card} 
-                    dealDelay={index * 300 + 600}
+                    isWinning={gameState.result === 'win' && gameState.gameStatus === 'finished'}
                   />
                 )
               }
@@ -288,7 +298,11 @@ export function GameBoard() {
               )
             })}
             {gameState.playerHand.slice(2).map((card, index) => (
-              <PlayingCard key={index + 2} card={card} dealDelay={(index + 2) * 300 + 600} />
+              <PlayingCard 
+                key={index + 2} 
+                card={card} 
+                isWinning={gameState.result === 'win' && gameState.gameStatus === 'finished'}
+              />
             ))}
           </div>
         </div>
@@ -350,10 +364,16 @@ export function GameBoard() {
           )}
 
           {gameState.gameStatus === 'finished' && (
-            <div className="space-y-4 md:space-y-6">
-              <div className="text-white text-xl md:text-2xl font-bold">
-                {gameState.result === 'win' ? 'You Win!' : 
-                 gameState.result === 'lose' ? 'You Lose!' : 'Push!'}
+            <div className="space-y-4 md:space-y-6 relative">
+
+              <div className={cn(
+                "text-white text-xl md:text-2xl font-bold",
+                gameState.result === 'win' && "animate-win-celebration text-green-400",
+                gameState.result === 'lose' && "text-red-400",
+                gameState.result === 'push' && "text-yellow-400"
+              )}>
+                {gameState.result === 'win' ? '🎉 You Win! 🎉' : 
+                 gameState.result === 'lose' ? '💔 You Lose!' : '🤝 Push!'}
               </div>
               <Button 
                 onClick={newGame} 
