@@ -170,22 +170,26 @@ export function GameBoard() {
   }
 
   const getAIAdvice = async () => {
-    const playerValue = calculateHandValue(gameState.playerHand)
-    const dealerUpCard = gameState.dealerHand[0]
-    
-    // Simple AI advice logic
-    let advice = ''
-    if (playerValue < 12) {
-      advice = 'Hit - Your hand is too low to risk standing'
-    } else if (playerValue >= 17) {
-      advice = 'Stand - Your hand is strong enough'
-    } else if (dealerUpCard.value >= 7) {
-      advice = 'Hit - Dealer has a strong up card'
-    } else {
-      advice = 'Stand - Dealer might bust with weak up card'
+    try {
+      setAiAdvice('Getting AI advice...')
+      
+      const response = await fetch('/api/ai-advice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          playerHand: gameState.playerHand,
+          dealerUpCard: gameState.dealerHand[0]
+        })
+      })
+      
+      const data = await response.json()
+      setAiAdvice(data.advice)
+    } catch (error) {
+      console.error('AI advice error:', error)
+      setAiAdvice('AI advice unavailable. Try again later.')
     }
-    
-    setAiAdvice(advice)
   }
 
   const playerValue = calculateHandValue(gameState.playerHand)

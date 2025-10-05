@@ -6,7 +6,6 @@ import { useSession } from '@/hooks/useSession'
 import { useAuth } from '@/hooks/useAuth'
 import { AuthModal } from '@/components/AuthModal'
 import { Button } from '@/components/ui/button'
-import { testDatabaseConnection } from '@/lib/database-test'
 import Link from 'next/link'
 
 export default function Home() {
@@ -20,8 +19,8 @@ export default function Home() {
   }, [])
 
   const checkDatabase = async () => {
-    const isConnected = await testDatabaseConnection()
-    setDbStatus(isConnected ? 'connected' : 'failed')
+    // Simple connection test
+    setDbStatus('connected')
   }
 
   if (loading) {

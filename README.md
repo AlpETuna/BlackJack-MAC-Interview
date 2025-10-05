@@ -65,7 +65,10 @@ Create `.env.local`:
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+CLAUDE_API_KEY=your_claude_api_key
 ```
+
+Get Claude API key from: https://console.anthropic.com/
 
 ### 4. Run Development Server
 ```bash
@@ -79,6 +82,7 @@ npm run dev
 3. Add environment variables in Netlify dashboard:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `CLAUDE_API_KEY`
 4. Deploy
 
 ## How It Works
@@ -127,10 +131,35 @@ npm run dev
 
 ## AI Assistant
 
-Click "AI Advice" during gameplay for basic strategy recommendations based on:
-- Your hand value
-- Dealer's up card
-- Basic blackjack strategy
+Click "AI Advice" during gameplay for real-time AI recommendations:
+- Uses Anthropic Claude AI API
+- Analyzes your hand and dealer's up card
+- Provides strategic advice with reasoning
+- Fallback to basic strategy if API unavailable
+
+## Requirements Checklist
+
+✅ **Functionally correct blackjack game**
+✅ **Simple design with card animations**
+✅ **Mobile-friendly responsive UI**
+✅ **External database storage (Supabase)**
+✅ **Chip buying and balance updates**
+✅ **Game history page with stats**
+✅ **Real AI API integration (Claude)**
+✅ **User authentication system**
+✅ **Session persistence in browser**
+✅ **Per-user data separation**
+✅ **Ready for deployment**
+
+## Assumptions Made
+
+- Infinite deck (no card counting needed)
+- Only Hit/Stand actions (no Double Down, Split)
+- Blackjack pays 1:1 (not 3:2)
+- Minimum bet: 5 chips
+- Starting chips: 1000
+- Guest users get browser-based sessions
+- Authenticated users get persistent cross-device data
 
 ## License
 
