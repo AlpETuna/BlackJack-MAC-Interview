@@ -1,39 +1,34 @@
 # Blackjack Game
 
-A modern, responsive blackjack game built with Next.js, Supabase, and TailwindCSS featuring persistent browser sessions, AI assistance, and game history tracking.
+A modern blackjack game with user authentication, persistent data storage, and AI assistance.
 
 ## Features
 
-- ✅ Functionally correct blackjack game
-- ✅ Animated card dealing and chip movements
-- ✅ Mobile-friendly responsive design
-- ✅ Persistent browser sessions (no login required)
-- ✅ External database storage (Supabase)
-- ✅ Chip management and purchasing
-- ✅ Game history and statistics
-- ✅ AI assistant for game decisions
+- ✅ Complete blackjack gameplay (hit, stand, betting)
+- ✅ User authentication (sign up/sign in)
+- ✅ Persistent user data (chips, game history)
+- ✅ AI advice for game decisions
+- ✅ Mobile-responsive design
+- ✅ Animated card dealing
 - ✅ Ready for Netlify deployment
 
 ## Tech Stack
 
 - **Frontend**: Next.js 14, TypeScript, TailwindCSS
-- **UI Components**: ShadCN/UI, Radix UI
-- **Database**: Supabase
-- **Deployment**: Netlify (recommended)
-- **Styling**: TailwindCSS with custom animations
+- **Database**: Supabase (auth + data storage)
+- **Deployment**: Netlify
+- **UI**: ShadCN components
 
-## Setup Instructions
+## Quick Start
 
 ### 1. Install Dependencies
-
 ```bash
 npm install
 ```
 
-### 2. Setup Supabase
+### 2. Setup Supabase Database
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to SQL Editor and run the following schema:
+Create a Supabase project and run this SQL:
 
 ```sql
 -- Create users table
@@ -56,116 +51,87 @@ CREATE TABLE game_history (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create indexes for better performance
-CREATE INDEX idx_users_session_id ON users(session_id);
-CREATE INDEX idx_game_history_user_id ON game_history(user_id);
-CREATE INDEX idx_game_history_created_at ON game_history(created_at DESC);
-```
+-- Enable RLS and create policies
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE game_history ENABLE ROW LEVEL SECURITY;
 
-3. Get your project URL and anon key from Settings > API
+CREATE POLICY "Allow all operations on users" ON users FOR ALL USING (true);
+CREATE POLICY "Allow all operations on game_history" ON game_history FOR ALL USING (true);
+```
 
 ### 3. Environment Variables
 
-Create `.env.local` file:
-
-```bash
-cp .env.local.example .env.local
+Create `.env.local`:
 ```
-
-Fill in your Supabase credentials:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### 4. Run Development Server
-
 ```bash
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
-
-## Deployment
-
-### Netlify (Recommended)
+## Deployment (Netlify)
 
 1. Push code to GitHub
 2. Connect repository to Netlify
-3. Add environment variables in Netlify dashboard
+3. Add environment variables in Netlify dashboard:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 4. Deploy
 
-### Manual Deployment
+## How It Works
 
-```bash
-npm run build
-npm start
+### Authentication System
+- **Guest Users**: Browser session (localStorage)
+- **Authenticated Users**: Supabase auth with persistent data
+- **Data Separation**: Each user has their own chips and game history
+
+### Game Flow
+1. **Betting**: Choose bet amount, place bet
+2. **Dealing**: Animated card dealing (player gets 2, dealer gets 2)
+3. **Playing**: Hit/Stand decisions with AI advice
+4. **Results**: Win/lose/push with chip updates
+5. **History**: All games saved to database
+
+### Data Storage
+- **Users Table**: Links session/auth ID to user data
+- **Game History**: Stores every completed game
+- **Chips**: Persistent across sessions and devices
+
+### File Structure
 ```
-
-## Game Features
-
-### Core Gameplay
-- Standard blackjack rules (dealer stands on 17)
-- Hit, Stand, and betting options
-- Automatic win/lose/push detection
-- Real-time hand value calculation
-
-### Session Management
-- Browser-based persistent sessions using localStorage
-- No login required - sessions persist across browser restarts
-- Automatic user creation in database
-
-### AI Assistant
-- Click "AI Advice" during gameplay
-- Basic strategy recommendations
-- Considers player hand and dealer up card
-
-### Chip Management
-- Starting chips: $1000
-- Buy additional chips: $500 increments
-- Chips persist in database per session
-
-### Game History
-- Tracks all games with results
-- Statistics: wins, losses, pushes, net winnings
-- Recent games list with bet amounts and dates
-
-## Mobile Responsive
-
-- Optimized for mobile devices
-- Touch-friendly buttons and cards
-- Responsive grid layouts
-- Mobile-first design approach
-
-## Architecture
-
-```
-├── app/                 # Next.js app directory
-│   ├── globals.css     # Global styles and CSS variables
-│   ├── layout.tsx      # Root layout
-│   ├── page.tsx        # Home page with game
+├── app/                 # Next.js pages
+│   ├── page.tsx        # Main game
 │   └── history/        # Game history page
 ├── components/         # React components
-│   ├── ui/            # ShadCN UI components
-│   ├── GameBoard.tsx  # Main game logic and UI
-│   └── PlayingCard.tsx # Animated card component
-├── hooks/             # Custom React hooks
-│   └── useSession.ts  # Session management
-└── lib/               # Utility libraries
-    ├── game.ts        # Blackjack game logic
-    ├── supabase.ts    # Database client and types
-    └── utils.ts       # Helper functions
+│   ├── GameBoard.tsx   # Main game logic
+│   ├── AuthModal.tsx   # Login/signup modal
+│   └── PlayingCard.tsx # Animated cards
+├── hooks/              # Custom hooks
+│   ├── useAuth.ts      # Authentication state
+│   └── useSession.ts   # User session management
+└── lib/                # Utilities
+    ├── game.ts         # Blackjack game logic
+    └── supabase.ts     # Database client
 ```
 
-## Contributing
+## Game Rules
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+- Standard blackjack rules
+- Dealer stands on 17
+- Blackjack pays 1:1
+- Starting chips: 1000
+- Minimum bet: 5
+
+## AI Assistant
+
+Click "AI Advice" during gameplay for basic strategy recommendations based on:
+- Your hand value
+- Dealer's up card
+- Basic blackjack strategy
 
 ## License
 
-MIT License - feel free to use this project for learning or commercial purposes.
+MIT License
