@@ -199,19 +199,34 @@ export function GameBoard() {
     <div className="min-h-screen bg-black p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-4">
-            <h1 className="text-4xl font-bold text-white">Blackjack</h1>
+        <div className="mb-8 md:mb-12">
+          {/* Top row - Title and chips */}
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl md:text-4xl font-bold text-white">Blackjack</h1>
+            <div className="flex items-center gap-1 md:gap-2">
+              <span className="text-lg md:text-2xl text-yellow-400">{gameState.chips}</span>
+              <span className="text-yellow-400 text-sm md:text-xl">🪙</span>
+              <Button 
+                onClick={() => buyChips(500)} 
+                className="ml-1 md:ml-2 bg-transparent border border-white text-white hover:bg-white hover:text-black w-6 h-6 md:w-8 md:h-8 rounded-full p-0 text-xs md:text-sm"
+              >
+                +
+              </Button>
+            </div>
+          </div>
+          
+          {/* Bottom row - Auth buttons */}
+          <div className="flex justify-center">
             {isAuthenticated ? (
-              <div className="flex gap-2">
+              <div className="flex gap-2 md:gap-4">
                 <Link href="/history">
-                  <Button className="bg-blue-500 text-white px-6 py-3 text-lg font-bold">
+                  <Button className="bg-blue-500 text-white px-3 py-2 md:px-6 md:py-3 text-sm md:text-lg font-bold">
                     HISTORY
                   </Button>
                 </Link>
                 <Button 
                   onClick={signOut}
-                  className="bg-red-500 text-white px-6 py-3 text-lg font-bold"
+                  className="bg-red-500 text-white px-3 py-2 md:px-6 md:py-3 text-sm md:text-lg font-bold"
                 >
                   LOG OUT
                 </Button>
@@ -219,21 +234,11 @@ export function GameBoard() {
             ) : (
               <Button 
                 onClick={() => setShowAuthModal(true)}
-                className="bg-green-500 text-white px-6 py-3 text-lg font-bold"
+                className="bg-green-500 text-white px-4 py-2 md:px-6 md:py-3 text-sm md:text-lg font-bold"
               >
                 SIGN IN
               </Button>
             )}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl text-yellow-400">{gameState.chips}</span>
-            <span className="text-yellow-400 text-xl">🪙</span>
-            <Button 
-              onClick={() => buyChips(500)} 
-              className="ml-2 bg-transparent border border-white text-white hover:bg-white hover:text-black w-8 h-8 rounded-full p-0"
-            >
-              +
-            </Button>
           </div>
         </div>
 
@@ -289,16 +294,16 @@ export function GameBoard() {
         </div>
 
         {/* Betting Area */}
-        <div className="text-center space-y-6">
+        <div className="text-center space-y-4 md:space-y-6">
           {gameState.gameStatus === 'betting' && (
             <>
-              <div className="text-white text-2xl mb-4">{gameState.bet || 100}</div>
-              <div className="flex gap-4 justify-center mb-6">
+              <div className="text-white text-xl md:text-2xl mb-4">{gameState.bet || 100}</div>
+              <div className="flex gap-2 md:gap-4 justify-center mb-4 md:mb-6 flex-wrap">
                 {[5, 25, 100].map(amount => (
                   <Button
                     key={amount}
                     onClick={() => setGameState(prev => ({ ...prev, bet: (prev.bet || 100) + amount }))}
-                    className="bg-transparent border border-white text-white hover:bg-white hover:text-black px-6 py-2"
+                    className="bg-transparent border border-white text-white hover:bg-white hover:text-black px-3 py-2 md:px-6 md:py-2 text-sm md:text-base"
                   >
                     +{amount}
                   </Button>
@@ -307,7 +312,7 @@ export function GameBoard() {
               <Button 
                 onClick={() => placeBet(gameState.bet || 100)}
                 disabled={(gameState.bet || 100) > gameState.chips}
-                className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg font-semibold"
+                className="bg-white text-black hover:bg-gray-200 px-6 py-3 md:px-8 md:py-3 text-base md:text-lg font-semibold"
               >
                 Place Bet
               </Button>
@@ -315,29 +320,29 @@ export function GameBoard() {
           )}
 
           {gameState.gameStatus === 'playing' && (
-            <div className="space-y-6">
-              <div className="flex gap-6 justify-center">
+            <div className="space-y-4 md:space-y-6">
+              <div className="flex gap-3 md:gap-6 justify-center flex-wrap">
                 <Button 
                   onClick={hit} 
-                  className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg font-semibold"
+                  className="bg-white text-black hover:bg-gray-200 px-6 py-3 md:px-8 md:py-3 text-base md:text-lg font-semibold"
                 >
                   Hit
                 </Button>
                 <Button 
                   onClick={stand} 
-                  className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg font-semibold"
+                  className="bg-white text-black hover:bg-gray-200 px-6 py-3 md:px-8 md:py-3 text-base md:text-lg font-semibold"
                 >
                   Stand
                 </Button>
                 <Button 
                   onClick={getAIAdvice} 
-                  className="bg-transparent border border-white text-white hover:bg-white hover:text-black px-6 py-3"
+                  className="bg-transparent border border-white text-white hover:bg-white hover:text-black px-4 py-3 md:px-6 md:py-3 text-sm md:text-base"
                 >
                   AI Advice
                 </Button>
               </div>
               {aiAdvice && (
-                <div className="text-white p-3 max-w-md mx-auto">
+                <div className="text-white p-3 max-w-sm md:max-w-md mx-auto text-sm md:text-base">
                   <strong>AI:</strong> {aiAdvice}
                 </div>
               )}
@@ -345,14 +350,14 @@ export function GameBoard() {
           )}
 
           {gameState.gameStatus === 'finished' && (
-            <div className="space-y-6">
-              <div className="text-white text-2xl font-bold">
+            <div className="space-y-4 md:space-y-6">
+              <div className="text-white text-xl md:text-2xl font-bold">
                 {gameState.result === 'win' ? 'You Win!' : 
                  gameState.result === 'lose' ? 'You Lose!' : 'Push!'}
               </div>
               <Button 
                 onClick={newGame} 
-                className="bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg font-semibold"
+                className="bg-white text-black hover:bg-gray-200 px-6 py-3 md:px-8 md:py-3 text-base md:text-lg font-semibold"
               >
                 New Game
               </Button>
