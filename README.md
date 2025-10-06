@@ -2,6 +2,9 @@
 
 A modern blackjack game with user authentication, persistent data storage, and AI assistance.
 
+see it at
+https://macblackjack.netlify.app/ [https://macblackjack.netlify.app/]
+
 ## Features
 
 - ✅ Complete blackjack gameplay (hit, stand, betting)
