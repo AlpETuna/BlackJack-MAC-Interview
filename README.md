@@ -163,7 +163,3 @@ Click "AI Advice" during gameplay for real-time AI recommendations:
 - Starting chips: 1000
 - Guest users get browser-based sessions
 - Authenticated users get persistent cross-device data
-
-## License
-
-MIT License
