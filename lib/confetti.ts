@@ -1,4 +1,26 @@
+let globalTimer: any = undefined;
+let globalFrame: any = undefined;
+let globalContainer: HTMLDivElement | null = null;
+
+export function stopConfetti() {
+  if (globalTimer) {
+    clearTimeout(globalTimer);
+    globalTimer = undefined;
+  }
+  if (globalFrame) {
+    cancelAnimationFrame(globalFrame);
+    globalFrame = undefined;
+  }
+  if (globalContainer && document.body.contains(globalContainer)) {
+    document.body.removeChild(globalContainer);
+    globalContainer = null;
+  }
+}
+
 export function triggerConfetti() {
+  // Stop any existing confetti first
+  stopConfetti();
+  
   const random = Math.random;
   const cos = Math.cos;
   const sin = Math.sin;
@@ -83,14 +105,15 @@ export function triggerConfetti() {
     return spline.sort();
   }
 
-  const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '0';
-  container.style.overflow = 'visible';
-  container.style.zIndex = '9999';
+  globalContainer = document.createElement('div');
+  globalContainer.style.position = 'fixed';
+  globalContainer.style.top = '0';
+  globalContainer.style.left = '0';
+  globalContainer.style.width = '100%';
+  globalContainer.style.height = '0';
+  globalContainer.style.overflow = 'visible';
+  globalContainer.style.zIndex = '9999';
+  const container = globalContainer;
 
   class Confetto {
     frame: number = 0;
@@ -175,7 +198,7 @@ export function triggerConfetti() {
       const confetto = new Confetto(theme);
       confetti.push(confetto);
       container.appendChild(confetto.outer);
-      timer = setTimeout(addConfetto, spread * random());
+      timer = globalTimer = setTimeout(addConfetto, spread * random());
     })();
 
     let prev: any = undefined;
@@ -192,11 +215,14 @@ export function triggerConfetti() {
       }
 
       if (timer || confetti.length) {
-        return frame = requestAnimationFrame(loop);
+        return frame = globalFrame = requestAnimationFrame(loop);
       }
 
-      document.body.removeChild(container);
-      frame = undefined;
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
+      frame = globalFrame = undefined;
+      globalContainer = null;
     });
   }
 }

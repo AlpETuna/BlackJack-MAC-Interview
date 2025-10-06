@@ -6,7 +6,7 @@ import { PlayingCard } from '@/components/PlayingCard'
 import { AuthModal } from '@/components/AuthModal'
 import { useSession } from '@/hooks/useSession'
 import { useAuth } from '@/hooks/useAuth'
-import { triggerConfetti } from '@/lib/confetti'
+import { triggerConfetti, stopConfetti } from '@/lib/confetti'
 import Link from 'next/link'
 import { 
   GameState, 
@@ -163,6 +163,7 @@ export function GameBoard() {
   }
 
   const newGame = () => {
+    stopConfetti()
     setGameState({
       playerHand: [],
       dealerHand: [],
